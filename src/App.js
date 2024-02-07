@@ -4,6 +4,7 @@ import HomePage from './pages/homepages/homepage';
 import ShoPage from './pages/shop/shop';
 import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
 import Header from './components/header/header';
+import Form from './pages/form/form';
 
 // pagina ejemplo de lista de items
 function TopicList() {
@@ -38,6 +39,7 @@ function App() {
         <Route exact path="/list" Component={TopicList} />
         <Route path="/list/:userId" Component={TopicDetail} />
         <Route path="/shop" Component={ShoPage} />
+        <Route path="/signin" Component={Form} />
       </Routes>
     </div>
   );
