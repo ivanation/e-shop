@@ -1,9 +1,10 @@
 import React from 'react';
 import './App.css';
 import HomePage from './pages/homepages/homepage';
+import ShoPage from './pages/shop/shop';
 import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
 
-
+// pagina ejemplo de lista de items
 function TopicList() {
   const { pathname } = useLocation();
   console.log(pathname);
@@ -16,6 +17,7 @@ function TopicList() {
   )
 }
 
+// pagina ejemplo detalle de items
 function TopicDetail() {
   let { userId } = useParams();
   return(
@@ -26,12 +28,6 @@ function TopicDetail() {
   )
 }
 
-const hatsPage = () =>(
-  <div>
-    <h1>Hats Page</h1>
-  </div>
-)
-
 function App() {
   return (
     <div>
@@ -39,7 +35,7 @@ function App() {
         <Route exact path='/' Component={HomePage} />
         <Route exact path="/list" Component={TopicList} />
         <Route path="/list/:userId" Component={TopicDetail} />
-        <Route path="/hats" Component={hatsPage} />
+        <Route path="/shop" Component={ShoPage} />
       </Routes>
     </div>
   );
