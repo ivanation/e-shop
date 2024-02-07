@@ -3,6 +3,7 @@ import './App.css';
 import HomePage from './pages/homepages/homepage';
 import ShoPage from './pages/shop/shop';
 import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
+import Header from './components/header/header';
 
 // pagina ejemplo de lista de items
 function TopicList() {
@@ -31,6 +32,7 @@ function TopicDetail() {
 function App() {
   return (
     <div>
+      <Header />
       <Routes>
         <Route exact path='/' Component={HomePage} />
         <Route exact path="/list" Component={TopicList} />
