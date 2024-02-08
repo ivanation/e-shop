@@ -5,7 +5,8 @@ import ShoPage from './pages/shop/shop';
 import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
 import Header from './components/header/header';
 import Form from './pages/form/form';
-import { fireauth } from './firebase/firebase.utils';
+import { fireauth, createUserProfileDocment } from './firebase/firebase.utils';
+
 
 // pagina ejemplo de lista de items
 function TopicList() {
@@ -43,15 +44,25 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount(){
-    this.unsubscribeFromAuth = fireauth.onAuthStateChanged(user =>{
-      this.setState({currentUser: user});
-      console.log(user);
+    this.unsubscribeFromAuth = fireauth.onAuthStateChanged(async userAuth =>{
+      if(userAuth){
+        const userRef = await createUserProfileDocment(userAuth);
+        if(userRef){
+          this.setState(
+            {currentUser: {id:userAuth.uid, ...userRef}},
+            () => {console.log(this.state)}
+          );
+        }
+      }
+
+      this.setState({currentUser: userAuth})
     })
   }
 
   componentWillUnmount(){
     this.unsubscribeFromAuth();
   }
+  
 
   render(){
     return (
