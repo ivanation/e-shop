@@ -5,6 +5,7 @@ import ShoPage from './pages/shop/shop';
 import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
 import Header from './components/header/header';
 import Form from './pages/form/form';
+import { fireauth } from './firebase/firebase.utils';
 
 // pagina ejemplo de lista de items
 function TopicList() {
@@ -30,19 +31,43 @@ function TopicDetail() {
   )
 }
 
-function App() {
-  return (
-    <div>
-      <Header />
-      <Routes>
-        <Route exact path='/' Component={HomePage} />
-        <Route exact path="/list" Component={TopicList} />
-        <Route path="/list/:userId" Component={TopicDetail} />
-        <Route path="/shop" Component={ShoPage} />
-        <Route path="/signin" Component={Form} />
-      </Routes>
-    </div>
-  );
+class App extends React.Component {
+  constructor(){
+    super();
+
+    this.state = {
+      currentUser: null
+    }
+  }
+
+  unsubscribeFromAuth = null;
+
+  componentDidMount(){
+    this.unsubscribeFromAuth = fireauth.onAuthStateChanged(user =>{
+      this.setState({currentUser: user});
+      console.log(user);
+    })
+  }
+
+  componentWillUnmount(){
+    this.unsubscribeFromAuth();
+  }
+
+  render(){
+    return (
+      <div>
+        <Header currentUser={this.state.currentUser} />
+        <Routes>
+          <Route exact path='/' Component={HomePage} />
+          <Route exact path="/list" Component={TopicList} />
+          <Route path="/list/:userId" Component={TopicDetail} />
+          <Route path="/shop" Component={ShoPage} />
+          <Route path="/signin" Component={Form} />
+        </Routes>
+      </div>
+    );
+  }
+
 }
 
 export default App;
