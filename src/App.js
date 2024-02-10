@@ -45,6 +45,7 @@ class App extends React.Component {
 
   componentDidMount(){
     this.unsubscribeFromAuth = fireauth.onAuthStateChanged(async userAuth =>{
+      this.setState({currentUser: userAuth})
       if(userAuth){
         const userRef = await createUserProfileDocment(userAuth);
         if(userRef){
@@ -54,8 +55,6 @@ class App extends React.Component {
           );
         }
       }
-
-      this.setState({currentUser: userAuth})
     })
   }
 

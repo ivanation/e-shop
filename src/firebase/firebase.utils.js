@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 //import { getAnalytics } from "firebase/analytics";
 //import { getStorage } from "firebase/storage";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
 import { doc, getDoc, collection, setDoc } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -57,6 +57,42 @@ export const signInWithGoogle = () => {
         const credential = GoogleAuthProvider.credentialFromError(error);
         console.log(credential);
         // ...
+    });
+}
+
+//////////////// email and pass
+
+export const signUpEmail = (email, password, displayName) => {
+    createUserWithEmailAndPassword(fireauth, email, password, displayName)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            user.displayName = displayName;
+            return user;
+            // ...
+    })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+            // ..
+    });
+}
+
+export const signInEmail = (email, password) => {
+    signInWithEmailAndPassword(fireauth, email, password)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            return user;
+            // ...
+    })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
     });
 }
 
