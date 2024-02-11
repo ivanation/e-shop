@@ -6,6 +6,8 @@ import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
 import Header from './components/header/header';
 import Form from './pages/form/form';
 import { fireauth, createUserProfileDocment } from './firebase/firebase.utils';
+import { connect } from 'react-redux';
+import { setCurrentUser } from './redux/user/user.action';
 
 
 // pagina ejemplo de lista de items
@@ -33,27 +35,22 @@ function TopicDetail() {
 }
 
 class App extends React.Component {
-  constructor(){
-    super();
-
-    this.state = {
-      currentUser: null
-    }
-  }
 
   unsubscribeFromAuth = null;
 
   componentDidMount(){
+    const {setCurrentUser} = this.props;
     this.unsubscribeFromAuth = fireauth.onAuthStateChanged(async userAuth =>{
-      this.setState({currentUser: userAuth})
+      setCurrentUser(userAuth)
       if(userAuth){
         const userRef = await createUserProfileDocment(userAuth);
+        
         if(userRef){
-          this.setState(
-            {currentUser: {id:userAuth.uid, ...userRef}},
-            () => {console.log(this.state)}
+          setCurrentUser(
+            {id:userAuth.uid, ...userRef}
           );
         }
+
       }
     })
   }
@@ -66,7 +63,7 @@ class App extends React.Component {
   render(){
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Routes>
           <Route exact path='/' Component={HomePage} />
           <Route exact path="/list" Component={TopicList} />
@@ -77,7 +74,10 @@ class App extends React.Component {
       </div>
     );
   }
-
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+export default connect(null, mapDispatchToProps)(App);
