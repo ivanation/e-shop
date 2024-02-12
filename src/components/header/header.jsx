@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../../assets/crown.svg';
 import { fireauth } from '../../firebase/firebase.utils';
 import { connect } from "react-redux";
+import CartIcon from "../cart-icon/cart-icon";
 
 const Header = ({ currentUser }) =>(
     <div className="header">
@@ -16,10 +17,12 @@ const Header = ({ currentUser }) =>(
         
             {
                 currentUser ?
-                <div className="option" onClick={() => fireauth.signOut()}>SING OUT</div>
+                (<div className="option" onClick={() => fireauth.signOut()}>SING OUT</div>)
                 :
-                <Link className="option" to='/signin'>SING IN</Link>
+                (<Link className="option" to='/signin'>SING IN</Link>)
             }
+
+            <CartIcon />
 
         </div>
     </div>

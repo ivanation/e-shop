@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import HomePage from './pages/homepages/homepage';
 import ShoPage from './pages/shop/shop';
-import { Route, Routes, useParams, useLocation, Link } from 'react-router-dom';
+import { Route, Routes, useParams, useLocation, Link, Navigate } from 'react-router-dom';
 import Header from './components/header/header';
 import Form from './pages/form/form';
 import { fireauth, createUserProfileDocment } from './firebase/firebase.utils';
@@ -41,7 +41,7 @@ class App extends React.Component {
   componentDidMount(){
     const {setCurrentUser} = this.props;
     this.unsubscribeFromAuth = fireauth.onAuthStateChanged(async userAuth =>{
-      setCurrentUser(userAuth)
+      setCurrentUser(userAuth);
       if(userAuth){
         const userRef = await createUserProfileDocment(userAuth);
         
@@ -50,7 +50,6 @@ class App extends React.Component {
             {id:userAuth.uid, ...userRef}
           );
         }
-
       }
     })
   }
@@ -59,8 +58,8 @@ class App extends React.Component {
     this.unsubscribeFromAuth();
   }
   
-
   render(){
+    console.log('usuario', this.props.setCurrentUser.user);
     return (
       <div>
         <Header />
@@ -69,15 +68,19 @@ class App extends React.Component {
           <Route exact path="/list" Component={TopicList} />
           <Route path="/list/:userId" Component={TopicDetail} />
           <Route path="/shop" Component={ShoPage} />
-          <Route path="/signin" Component={Form} />
+          <Route exact path="/signin" Component={ () => this.props.setCurrentUser == null ? <Navigate to='/' replace /> : <Form /> } />
         </Routes>
       </div>
     );
   }
 }
 
+const mapStateToProps = ({user}) => ({
+  setCurrentUser: user.setCurrentUser
+})
+
 const mapDispatchToProps = dispatch => ({
   setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
